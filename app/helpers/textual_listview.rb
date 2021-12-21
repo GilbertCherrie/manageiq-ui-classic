@@ -10,8 +10,10 @@ TextualListview = Struct.new(:title, :headers, :col_order, :value) do
     }
   end
 
-  def self.new_from_hash(h)
-    new(*h.values_at(*members))
+  def self.new_from_hash(h0)
+    unless h0.nil?
+      new(*h0.values_at(*members))
+    end
   end
 
   def self.data(h)

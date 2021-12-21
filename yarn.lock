@@ -1144,10 +1144,10 @@
     enabled "2.0.x"
     kuler "^2.0.0"
 
-"@data-driven-forms/carbon-component-mapper@~2.24.3":
-  version "2.24.3"
-  resolved "https://registry.yarnpkg.com/@data-driven-forms/carbon-component-mapper/-/carbon-component-mapper-2.24.3.tgz#f1d40009d67ce8c894526f5d34a73e12388ac211"
-  integrity sha512-8Q1ON2TjntX/lbQDHDweresgZzTk6d+Ia1X8ROHItFhDY8tC66ntMOpOZXe1IsRnq4W9vtoqi05SB1myzVX3Ug==
+"@data-driven-forms/carbon-component-mapper@~2.24.5":
+  version "2.24.10"
+  resolved "https://registry.yarnpkg.com/@data-driven-forms/carbon-component-mapper/-/carbon-component-mapper-2.24.10.tgz#e50a3c516077b8f5d09faebf4f9b4227a6206aac"
+  integrity sha512-OswQktnzrAaH3xLCvSDfH04JWQPqZ7Rb1SwmTlCfqw75zq0PJMyrrlx5CO5/borBvhGG9nDskO4T9c5nVuzatw==
   dependencies:
     prop-types ">=15.7.2"
 
