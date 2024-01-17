@@ -68,11 +68,12 @@ class TreeBuilderMenuRoles < TreeBuilder
 
   def build_middle_child(parent_name, item)
     {
-      :id      => "s__#{parent_name}:#{item.first}",
-      :icon    => "pficon pficon-folder-close",
-      :text    => item.first,
-      :tooltip => item.first,
-      :data    => item.last
+      :id         => "s__#{parent_name}:#{item.first}",
+      :icon       => "pficon pficon-folder-close",
+      :text       => item.first,
+      :tooltip    => item.first,
+      :selectable => false,
+      :data       => item.last
     }
   end
 
