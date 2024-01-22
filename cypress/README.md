@@ -27,6 +27,11 @@ Actual tests can be found in `cypress/integration/ui/`.
 
 ManageIQ implements the following cypress extensions:
 
+##### explorer
+
+* `cy.accordion(title)` - open an accordion panel. title: String for the accordion title for the accordion panel to open.
+* `cy.accordionItem(name)` - click on a record in the accordion panel. name: String for the record to click in the accordion panel.
+
 ##### login
 
 `cy.login()` - logs in as admin
@@ -50,14 +55,17 @@ TODO allow using {id:...} instead of string label for menu items, gtl items, tre
 
 * `cy.expect_explorer_title('Active Services')` - check the title on an explorer screen
 * `cy.expect_show_list_title('Cloud Providers')` - check the title on a show\_list screen
+* `cy.expect_search_box()` - check if searchbox is present on screen
+* `cy.expect_no_search_box()` - check if no searchbox is present on the screen
 * TODO `cy.expect_layout('miq-layout-center_div_with_listnav')` - check current layout
 
 #### GTL
 
-* `cy.gtl()` - return GTL
 * `cy.gtl_error` - check that error message is present
 * `cy.gtl_no_record` - check that `No data` message is present
-* `cy.gtl_click('Name')` - click on a GTL
+* `cy.gtlGetTable` - return GTL table
+* `cy.gtlGetRows(columns)` - return GTL table row data in an array. columns: Array of 0-based indexes of the columns to read (e.g. [1, 2, 3] will return all row data from columns 1, 2, and 3)
+* `cy.gtlClickRow(columns)` - click on a row in a GTL table. columns: Array of `{ title: String, number: Integer }`. `title` is the string you want to find in the table to click on, `number` is the column that string is found in. (e.g. `[{title: 'Default', number: 1}, {title: 'Compute', number: 2}]` will click on a row in the GTL table with 'Default' in column 1 and 'Compute' in column 2. Using just `[{title: 'Default', number: 1}]` will click on the first row found in the GTL table with 'Default' in column 1).
 
 #### searchbox
 
