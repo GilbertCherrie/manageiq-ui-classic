@@ -5,6 +5,7 @@ export const workflowStateTypes = {
   failure: { text: 'failure', tagType: 'red' },
   failed: { text: 'failed', tagType: 'gray' },
   pending: { text: 'pending', tagType: 'gray' },
+  running: { text: 'running', tagType: 'gray' },
 };
 
 /** Function to get the header data of workflow states table. */
@@ -42,13 +43,50 @@ const convertDate = (date) => {
   return formattedDate.toString();
 };
 
+// Converts the duration time in ms and returns a string in format: w days x hours y minutes z seconds
+// duration: time in ms
+const convertDuration = (duration) => {
+  const durationString = moment.duration(duration, 'milliseconds').toISOString().split('PT')[1];
+  let startIndex = 0;
+  let resultString = '';
+  if (durationString.indexOf('H') >= 0) {
+    resultString += `${durationString.slice(startIndex, durationString.indexOf('H'))}h `;
+    startIndex = durationString.indexOf('H') + 1;
+  }
+  if (durationString.indexOf('M') >= 0) {
+    resultString += `${durationString.slice(startIndex, durationString.indexOf('M'))}m `;
+    startIndex = durationString.indexOf('M') + 1;
+  }
+  if (durationString.indexOf('S') >= 0) {
+    resultString += `${durationString.slice(startIndex, durationString.indexOf('S'))}s`;
+    startIndex = durationString.indexOf('S') + 1;
+  }
+  return resultString;
+};
+
+const getItemIcon = (item) => {
+  if (item.FinishedTime) {
+    if (item.Output && item.Output.Error) {
+      if (item.RetryCount) {
+        return { icon: 'carbon--RetryFailed' }
+      } else {
+        return { icon: 'carbon--MisuseOutline' }
+      }
+    } else {
+      return { icon: 'carbon--CheckmarkOutline' }
+    }
+  } else {
+    return { icon: 'carbon--PlayOutline' }
+  }
+};
+
 /** Function to get the row data of workflow states table. */
 const rowData = ({ StateHistory }) => StateHistory.map((item) => ({
   id: item.Guid.toString(),
-  name: item.Name,
+  name: { text: item.Name, ...getItemIcon(item) },
   enteredTime: convertDate(item.EnteredTime.toString()),
   finishedTime: convertDate(item.FinishedTime.toString()),
-  duration: item.Duration.toFixed(3).toString(),
+  duration: convertDuration(item.Duration * 1000),
 }));
 
 /** Function to return the header, row and status data required for the RequestWorkflowStatus component.  */
@@ -58,6 +96,20 @@ export const workflowStatusData = (response) => {
     return undefined;
   }
   const rows = response.context ? rowData(response.context) : [];
+  if (response.context && response.context.State && !response.context.State.FinishedTime) {
+    const state = response.context.State;
+    const currentTime = new Date(); // Date Object for current time
+    const oldTime = Date.parse(state.EnteredTime); // ms since start time to entered time in UTC
+    const durationTime = currentTime.getTime() - oldTime; // ms from entered time to current time
+
+    rows.push({
+      id: state.Guid.toString(),
+      name: { text: state.Name, ...getItemIcon(state)  },
+      enteredTime: convertDate(state.EnteredTime.toString()),
+      finishedTime: '',
+      duration: convertDuration(durationTime),
+    });
+  }
   const headers = headerData();
   const name = response.name || response.description;
   return {

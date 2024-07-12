@@ -1,17 +1,17 @@
 export const infoData = {
-  title: _('Basic Information'),
+  title: __('Basic Information'),
   mode: 'miq_alert_set_info',
   items: [
-    { label: _('Description'), value: 'bar' },
-    { label: _('Mode'), value: 'Mode' },
+    { label: __('Description'), value: 'bar' },
+    { label: __('Mode'), value: 'Mode' },
   ],
 };
 
 export const alertSetAssignedData = {
-  title: _('Assigned To'),
+  title: __('Assigned To'),
   mode: 'miq_alert_set_assigned',
   items: [
-    { label: _('The Enterprise') },
+    { label: __('The Enterprise') },
     {
       label: 'Object class',
       value: [
@@ -24,7 +24,7 @@ export const alertSetAssignedData = {
 };
 
 export const alertSetNotes = {
-  title: _('Notes'),
+  title: __('Notes'),
   mode: 'miq_alert_set_notes',
   items: [
     {
@@ -36,16 +36,16 @@ export const alertSetNotes = {
 };
 
 export const alertSetAlerts = {
-  title: _('Alerts'),
+  title: __('Alerts'),
   mode: 'miq_alert_set',
-  message: _('This Action is not assigned to any Policies.'),
+  message: __('This Action is not assigned to any Policies.'),
   items: [
     {
       cells: [
         { icon: 'pficon pficon-warning-triangle-o', value: 'Alert description' },
       ],
       title: 'View this Alert',
-      onclick: "DoNav('/miq_alert/show/1');",
+      onclick: { url: '/miq_alert/show/1' },
     },
   ],
 };

@@ -22,7 +22,6 @@ class ApplicationHelper::Toolbar::AnsibleRepositoriesCenter < ApplicationHelper:
           N_('Refresh Selected Ansible Repositories'),
           N_('Refresh Selected Ansible Repositories'),
           :klass        => ApplicationHelper::Button::EmbeddedAnsible,
-          :url          => "repository_refresh",
           :confirm      => N_("Refresh selected Ansible Repositories?"),
           :enabled      => false,
           :url_parms    => 'unused_div',
@@ -77,7 +76,7 @@ class ApplicationHelper::Toolbar::AnsibleRepositoriesCenter < ApplicationHelper:
                    :onwhen  => "1+",
                    :items   => [
                      button(
-                       :ansible_repository_tag,
+                       :embedded_configuration_script_source_tag,
                        'pficon pficon-edit fa-lg',
                        N_('Edit Tags for the selected Ansible Repositories'),
                        N_('Edit Tags'),

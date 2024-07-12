@@ -80,7 +80,7 @@ CatalogController:
 - dynamic_date_refresh
 - dynamic_radio_button_refresh
 - dynamic_text_box_refresh
-- embededded_workflows_modal
+- embedded_workflows_modal
 - explorer
 - index
 - open_url_after_dialog
@@ -419,6 +419,17 @@ DashboardController:
 - tree_select
 - wait_for_task
 - widget_to_pdf
+EmbeddedTerraformCredentialController:
+- report_data
+- index
+- search_clear
+EmbeddedTerraformRepositoryController:
+- report_data
+- index
+EmbeddedTerraformTemplateController:
+- search_clear
+- index
+- report_data
 EmsCloudController:
 - compare_cancel
 - compare_choose_base

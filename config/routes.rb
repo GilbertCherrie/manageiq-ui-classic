@@ -314,7 +314,7 @@ Rails.application.routes.draw do
         atomic_st_edit
         automate_button_field_changed
         playbook_options_field_changed
-        embededded_workflows_modal
+        embedded_workflows_modal
         explorer
         group_create
         group_reorder_field_changed
@@ -1308,6 +1308,7 @@ Rails.application.routes.draw do
         show_list
         show
         quick_search
+        download_summary_pdf
       ],
 
       :post   =>  %w[
@@ -2165,6 +2166,9 @@ Rails.application.routes.draw do
         show
         show_list
       ],
+      :post => %w[
+        show_list
+      ]
     },
 
     :condition => {

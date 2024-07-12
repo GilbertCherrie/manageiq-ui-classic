@@ -38,6 +38,13 @@ module ApplicationController::MiqRequestMethods
 
       all_dialogs = @edit[:wf].get_all_dialogs rescue []
 
+      if @edit[:new] && @edit[:new][:addr_mode] && @edit[:new][:addr_mode][0] == "dhcp" && all_dialogs[:customize]
+        all_dialogs[:customize][:fields][:hostname]&.[]=(:read_only, true)
+        all_dialogs[:customize][:fields][:linux_host_name]&.[]=(:read_only, true)
+        all_dialogs[:customize][:fields][:subnet_mask][:read_only] = true
+        all_dialogs[:customize][:fields][:gateway][:read_only] = true
+      end
+
       render :update do |page|
         page << javascript_prologue
         # Going thru all dialogs to see if model has set any of the dialog display to hide/ignore
@@ -141,7 +148,7 @@ module ApplicationController::MiqRequestMethods
       end
     elsif params[:hide_deprecated_templates]
       @edit = session[:edit]
-      @edit[:hide_deprecated_templates] = params[:hide_deprecated_templates] == "true"
+      @edit[:hide_deprecated_templates] = provisioning_is_cloud? ? params[:hide_deprecated_templates] == "true" : nil
       render_updated_templates
     else # First time in, build pre-provision screen
       set_pre_prov_vars
@@ -152,6 +159,7 @@ module ApplicationController::MiqRequestMethods
 
   def render_updated_templates
     report_scopes = [:eligible_for_provisioning]
+    report_scopes.push([:filter_with_name, params[:search_text]])
     report_scopes.push(:non_deprecated) if @edit[:hide_deprecated_templates]
     options = options_for_provisioning(get_template_kls.to_s, report_scopes)
 

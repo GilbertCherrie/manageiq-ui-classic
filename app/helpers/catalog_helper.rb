@@ -1,5 +1,5 @@
 module CatalogHelper
-  include_concern 'TextualSummary'
+  include TextualSummary
   include RequestInfoHelper
   include Mixins::AutomationMixin
   include OrchestrationTemplateHelper
@@ -9,7 +9,6 @@ module CatalogHelper
     data = {:rows => [], :headers => headers}
     prev_group = 0
     resources.sort_by { |rsc| [rsc.group_idx, rsc.resource_name.downcase] }.each_with_index do |r, i|
-      col_span = 10
       if prev_group != r.group_idx && i < resources.length
         prev_group = r.group_idx
       end
@@ -28,9 +27,10 @@ module CatalogHelper
       row = {
         :id        => i.to_s,
         :title     => _("Click to this Catalog Item"),
-        :onclick   => remote_function(:loading  => "miqSparkle(true);",
-                                      :complete => "miqSparkle(false);",
-                                      :url      => "/catalog/x_show/#{r.resource_id}"),
+        :onclick   => {
+          :remote => true,
+          :url    => "/catalog/x_show/#{r.resource_id}"
+        },
         :cells     => cells,
         :clickable => true
       }
@@ -53,25 +53,25 @@ module CatalogHelper
       data[:rows].push(row_data(_('Price / Month (in %{currency})') % {:currency => record.currency.code}, record.price.to_s))
     end
     disable = !record.template_valid?
-    action = disable ? '' : "miqOrderService(#{record.id});"
+    action = disable ? {} : {:remote => true, :url => "/catalog/x_button/#{record.id}?pressed=svc_catalog_provision"}
     data[:rows].push({:cells => {:button => {:name => _("Order"), :action => action, :disabled => disable}}})
     miq_structured_list(data)
   end
 
   def catalog_tab_configuration(record)
     condition = catalog_tab_conditions(record)
-    tab_labels = [tab_label(:basic)]
-    tab_labels.push(tab_label(:detail)) if condition[:detail]
+    tab_labels = [:basic]
+    tab_labels.push(:detail) if condition[:detail]
 
     if condition[:resource]
-      tab_labels.push(tab_label(:resource))
+      tab_labels.push(:resource)
     elsif condition[:request]
-      tab_labels.push(tab_label(:request))
+      tab_labels.push(:request)
     end
 
     if condition[:provision]
-      tab_labels.push(tab_label(:provision))
-      tab_labels.push(tab_label(:retirement)) if condition[:retirement]
+      tab_labels.push(:provision)
+      tab_labels.push(:retirement) if condition[:retirement]
     end
 
     return tab_labels, condition
@@ -79,19 +79,15 @@ module CatalogHelper
 
   def catalog_tab_edit_configuration(record)
     condition = catalog_tab_edit_conditions(record)
-    tab_labels = [tab_label(:basic)]
-    tab_labels.push(tab_label(:detail)) if condition[:detail]
-    tab_labels.push(tab_label(:resource)) if condition[:resource]
-    tab_labels.push(tab_label(:request)) if condition[:request]
+    tab_labels = [:basic]
+    tab_labels.push(:detail) if condition[:detail]
+    tab_labels.push(:resource) if condition[:resource]
+    tab_labels.push(:request) if condition[:request]
     return tab_labels, condition
   end
 
-  def catalog_tab_edit_generic_configuration
-    [tab_label(:basic), tab_label(:provision), tab_label(:retirement)]
-  end
-
   def catalog_tab_content(key_name, &block)
-    if catalog_tabs_types[key_name]
+    if catalog_tabs_types.include?(key_name)
       class_name = key_name == :basic ? 'tab_content active' : 'tab_content'
       content_tag(:div, :id => key_name, :class => class_name, &block)
     end
@@ -99,7 +95,7 @@ module CatalogHelper
 
   def catalog_basic_information(record, sb_params, tenants_tree)
     prov_types = catalog_provision_types
-    prov_data = [prov_types[:template], prov_types[:ovf]].include?(record.prov_type) && catalog_provision?(record, :playbook) ? provisioning : nil
+    prov_data = [prov_types[:template], prov_types[:ovf]].include?(record.prov_type) && (catalog_provision?(record, :playbook) || catalog_provision?(record, :terraform_template)) ? provisioning : nil
     data = {:title => _('Basic Information'), :mode => "miq_catalog_basic_information"}
     rows = []
     rows.push(row_data(_('Name'), record.name))
@@ -107,7 +103,7 @@ module CatalogHelper
     rows.push(row_data(_('Display in Catalog'), {:input => "checkbox", :name => "display", :checked => record.display, :disabled => true, :label => ''}))
     rows.push(row_data(_('Catalog'), record.service_template_catalog ? record.service_template_catalog.name : _('Unassigned')))
     rows.push(row_data(_('Zone'), record.zone ? record.zone.name : '')) unless record.composite?
-    rows.push(row_data(_('Dialog'), sb_params[:dialog_label])) unless catalog_provision?(record, :playbook)
+    rows.push(row_data(_('Dialog'), sb_params[:dialog_label])) unless catalog_provision?(record, :playbook) || catalog_provision?(record, :terraform_template)
     rows.push(row_data(_("Price / Month (in %{currency})") % {:currency => record.currency.code}, record.price)) if record.currency
     rows.push(row_data(_('Item Type'), _(ServiceTemplate.all_catalog_item_types[record.prov_type]))) if record.prov_type
     rows.push(row_data(_('Subtype'), _(ServiceTemplate::GENERIC_ITEM_SUBTYPES[record[:generic_subtype]]) || _("Custom"))) if catalog_provision?(record, :generic)
@@ -122,7 +118,7 @@ module CatalogHelper
       rows.push(row_data(_('Container Template'), provision_data(prov_data, :template_name)))
     end
 
-    unless catalog_provision?(record, :playbook)
+    unless catalog_provision?(record, :playbook) || catalog_provision?(record, :terraform_template)
       entry_points = [[_("Provisioning"), :fqname]]
       unless record.prov_type.try(:start_with?, "generic_")
         entry_points.push([_("Reconfigure"), :reconfigure_fqname], [_("Retirement"), :retire_fqname])
@@ -188,21 +184,30 @@ module CatalogHelper
     miq_structured_list(data)
   end
 
-  def catalog_generic_ansible_playbook_info(type, record, info)
+  def catalog_generic_template_info(type, record, info)
     list_type = type == :provision ? 'provisioning' : 'retirement'
     data = {:title => "#{list_type.camelize} %s" % _('Info'), :mode => "miq_catalog_playbook_info"}
     rows = []
     rows.push(row_data(_('Repository'), info[:repository]))
-    rows.push(row_data(_('Playbook'), info[:playbook]))
-    rows.push(row_data(_('Machine Credential'), info[:machine_credential]))
-    rows.push(row_data(_('Vault Credential'), info[:vault_credential]))
-    rows.push(row_data(_('Vault Credential'), info[:vault_credential]))
-    rows.push(row_data(_('Cloud Credential'), info[:cloud_credential]))
-    rows.push(row_data(_('Max TTL (mins)'), record.config_info[type][:execution_ttl]))
-    rows.push(row_data(_('Hosts'), record.config_info[type][:hosts]))
-    rows.push(row_data(_('Logging Output'), ViewHelper::LOG_OUTPUT_LEVELS[info[:log_output]]))
-    rows.push(row_data(_('Escalate Privilege'), info[:become_enabled]))
-    rows.push(row_data(_('Verbosity'), _(ViewHelper::VERBOSITY_LEVELS[info[:verbosity]])))
+    if record.type == 'ServiceTemplateAnsiblePlaybook'
+      rows.push(row_data(_('Playbook'), info[:playbook]))
+      rows.push(row_data(_('Machine Credential'), info[:machine_credential]))
+      rows.push(row_data(_('Vault Credential'), info[:vault_credential]))
+      rows.push(row_data(_('Cloud Credential'), info[:cloud_credential]))
+      rows.push(row_data(_('Max TTL (mins)'), record.config_info[type][:execution_ttl]))
+      rows.push(row_data(_('Hosts'), record.config_info[type][:hosts]))
+      rows.push(row_data(_('Logging Output'), ViewHelper::LOG_OUTPUT_LEVELS[info[:log_output]]))
+      rows.push(row_data(_('Escalate Privilege'), info[:become_enabled]))
+      rows.push(row_data(_('Verbosity'), _(ViewHelper::VERBOSITY_LEVELS[info[:verbosity]])))
+    else
+      rows.push(row_data(_('Template'), info[:template]))
+      rows.push(row_data(_('Credential'), info[:credential]))
+      rows.push(row_data(_('Max TTL (mins)'), record.config_info[type][:execution_ttl]))
+      rows.push(row_data(_('Logging Output'), ViewHelper::LOG_OUTPUT_LEVELS[info[:log_output]]))
+      rows.push(row_data(_('Escalate Privilege'), info[:become_enabled]))
+      rows.push(row_data(_('Verbosity'), _(ViewHelper::VERBOSITY_LEVELS[info[:verbosity]])))
+      data[:rows] = rows
+    end
     data[:rows] = rows
     miq_structured_list(data)
   end
@@ -231,7 +236,7 @@ module CatalogHelper
         rows.push({
                     :cells   => [{:value => provisioning[:dialog]}],
                     :title   => provisioning[:dialog],
-                    :onclick => "DoNav('/miq_ae_customization/show/dg-#{provisioning[:dialog_id]}');",
+                    :onclick => {:url => "/miq_ae_customization/show/dg-#{provisioning[:dialog_id]}"},
                   })
       else
         rows.push(row_data('', provisioning[:dialog]))
@@ -242,25 +247,19 @@ module CatalogHelper
   end
 
   def catalog_provision_types
-    {:generic       => "generic",
-     :orchestration => "generic_orchestration",
-     :ovf           => "generic_ovf_template",
-     :playbook      => "generic_ansible_playbook",
-     :tower         => "generic_ansible_tower",
-     :template      => "generic_container_template"}.freeze
+    {:generic            => "generic",
+     :orchestration      => "generic_orchestration",
+     :ovf                => "generic_ovf_template",
+     :playbook           => "generic_ansible_playbook",
+     :terraform_template => "generic_terraform_template",
+     :tower              => "generic_ansible_tower",
+     :template           => "generic_container_template"}.freeze
   end
 
   private
 
   def catalog_tabs_types
-    {
-      :basic      => _('Basic Information'),
-      :detail     => _('Details'),
-      :resource   => _('Selected Resources'),
-      :request    => _('Request Info'),
-      :provision  => _('Provisioning'),
-      :retirement => _('Retirement')
-    }
+    [:basic, :detail, :resource, :request, :provision, :retirement]
   end
 
   def catalog_tab_conditions(record)
@@ -268,8 +267,8 @@ module CatalogHelper
       :detail     => record.display && !record.prov_type.try(:start_with?, "generic_"),
       :resource   => record.composite?,
       :request    => !record.prov_type || (record.prov_type && need_prov_dialogs?(record.prov_type)),
-      :provision  => record.prov_type == catalog_provision_types[:playbook],
-      :retirement => record.config_info.fetch_path(:retirement)
+      :provision  => record.prov_type == catalog_provision_types[:playbook] || record.prov_type == catalog_provision_types[:terraform_template],
+      :retirement => record.prov_type == catalog_provision_types[:terraform_template] ? nil : record.config_info.fetch_path(:retirement)
     }
   end
 
@@ -296,10 +295,6 @@ module CatalogHelper
 
   def catalog_provision?(record, type)
     record.prov_type == catalog_provision_types[type]
-  end
-
-  def tab_label(item)
-    {:name => item, :text => catalog_tabs_types[item]}
   end
 
   # Method which return true if workflows are behing prototype flag.

@@ -14,8 +14,8 @@ class ConfigurationScriptController < ApplicationController
   menu_section :at
   feature_for_actions controller_name, *ADV_SEARCH_ACTIONS
 
-  def self.table_name
-    @table_name ||= "configuration_script"
+  def self.model
+    ManageIQ::Providers::ExternalAutomationManager::ConfigurationScript
   end
 
   def button
@@ -45,7 +45,7 @@ class ConfigurationScriptController < ApplicationController
   private
 
   def textual_group_list
-    [%i[properties tags]]
+    [%i[properties variables tags surveys]]
   end
   helper_method :textual_group_list
 

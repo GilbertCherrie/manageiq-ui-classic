@@ -213,7 +213,7 @@ AnsiblePlayBookEditCatalogForm.propTypes = {
     tenantTree: PropTypes.shape({
       additional_tenants: PropTypes.arrayOf(PropTypes.any).isRequired,
       selectable: PropTypes.bool.isRequired,
-      ansible_playbook: PropTypes.bool.isRequired,
+      show_tenant_tree: PropTypes.bool.isRequired,
       catalog_bundle: PropTypes.bool.isRequired,
       locals_for_render: PropTypes.shape({
         tree_id: PropTypes.string.isRequired,

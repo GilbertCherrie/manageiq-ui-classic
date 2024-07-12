@@ -10,7 +10,7 @@ module ApplicationHelper
   include StiRoutingHelper
   include ToolbarHelper
   include TextualSummaryHelper
-  include NumberHelper
+  ActionView::Helpers::NumberHelper.prepend NumberHelper # override rails number helper with our needs for number_to_human_size
   include Title
   include ReactjsHelper
   include Webpack
@@ -399,10 +399,18 @@ module ApplicationHelper
       action = "show"
     when "ServiceResource", "ServiceTemplate"
       controller = "catalog"
+    when "ManageIQ::Providers::ExternalAutomationManager::ConfigurationScript"
+      controller = "configuration_script"
     when "ManageIQ::Providers::EmbeddedAnsible::AutomationManager::Playbook"
       controller = "ansible_playbook"
     when "ManageIQ::Providers::EmbeddedAnsible::AutomationManager::Credential"
       controller = "ansible_credential"
+    when "ManageIQ::Providers::EmbeddedTerraform::AutomationManager::Credential"
+      controller = "embedded_terraform_credential"
+    when "ManageIQ::Providers::EmbeddedTerraform::AutomationManager::ConfigurationScriptSource"
+      controller = "embedded_terraform_repository"
+    when "ManageIQ::Providers::EmbeddedTerraform::AutomationManager::Template"
+      controller = "embedded_terraform_template"
     when "ManageIQ::Providers::Workflows::AutomationManager::Workflow"
       controller = "workflow"
     when "ManageIQ::Providers::Workflows::AutomationManager::ConfigurationScriptSource"

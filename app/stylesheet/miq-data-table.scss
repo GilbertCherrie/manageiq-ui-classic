@@ -1,3 +1,9 @@
+:root {
+  --green: #2d7623;
+  --red: #cc0000;
+  --yellow: #ec7a08;
+}
+
 .tenant-quota-data-table {
   .miq-data-table {
     margin-bottom: 32px;
@@ -113,7 +119,7 @@
       }
 
       .icon.fa-ruby {
-        color: #cc0000 !important;
+        color: var(--red) !important;
       }
 
       span {
@@ -123,7 +129,7 @@
 
       button {
         padding: 0;
-        margin: 5px 0;
+        margin: -5px 0 0 0;
 
         span {
           display: flex;
@@ -253,10 +259,15 @@
 .provision-instance-container {
   display: flex;
   flex-direction: column;
+  margin-top: 20px;
 
   .provision-instance-list {
-    height: calc(100vh - 210px);
+    height: calc(100vh - 200px);
     overflow: auto;
+
+    .miq-data-table {
+      margin-top: 0;
+    }
   }
   .provision-instance-actions {
 
@@ -382,3 +393,24 @@ table.miq_preview {
   }
 }
 
+.request-workflow-status {
+  .carbon-icons-style {
+    margin-right: 5px;
+  }
+
+  .carbon--CheckmarkOutline {
+    color: var(--green);
+  }
+
+  .carbon--MisuseOutline {
+    color: var(--red);
+  }
+
+  .carbon--PlayOutline {
+    color: var(--yellow)
+  }
+
+  .carbon--RetryFailed {
+    color: var(--red);
+  }
+}

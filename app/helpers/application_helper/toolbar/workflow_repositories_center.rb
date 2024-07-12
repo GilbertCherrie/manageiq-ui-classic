@@ -25,7 +25,6 @@ class ApplicationHelper::Toolbar::WorkflowRepositoriesCenter < ApplicationHelper
                        N_('Refresh Selected Workflow Repositories'),
                        N_('Refresh Selected Workflow Repositories'),
                        :klass        => ApplicationHelper::Button::EmbeddedWorkflow,
-                       :url          => "repository_refresh",
                        :confirm      => N_("Refresh selected Workflow Repositories?"),
                        :enabled      => false,
                        :url_parms    => 'unused_div',
@@ -86,7 +85,7 @@ class ApplicationHelper::Toolbar::WorkflowRepositoriesCenter < ApplicationHelper
                    :items   =>
                                [
                                  button(
-                                   :ansible_repository_tag,
+                                   :embedded_configuration_script_source_tag,
                                    'pficon pficon-edit fa-lg',
                                    N_('Edit Tags for the selected Workflow Repositories'),
                                    N_('Edit Tags'),

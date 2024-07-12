@@ -58,6 +58,10 @@
     &.button_wrapper {
       margin: 20px 0;
 
+      a {
+        width: max-content;
+      }
+
       button {
         padding: 10px 30px;
       }
@@ -65,6 +69,9 @@
   }
 
   .content_value {
+    &.array_item:first-child {
+      width: 250px;
+    }
     .content {
       display: flex;
       flex-direction: row;
@@ -248,5 +255,19 @@
       width: 100%;
       margin-top: 20px;
     }
+  }
+}
+
+.templates-summary-page {
+  .col-lg-6 {
+    width: 100%;
+  }
+
+  .miq-structured-list-accordion {
+    width: 50%;
+  }
+  
+  .survey-table {
+    width: 100%;
   }
 }

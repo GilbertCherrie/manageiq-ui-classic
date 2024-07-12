@@ -33,8 +33,12 @@ window.miqOnLoad = function() {
   }
 
   // Run MIQ after onload code if present
-  if (typeof ManageIQ.afterOnload === 'string') {
-    eval(ManageIQ.afterOnload);
+  if (ManageIQ.afterOnload) {
+    const data = ManageIQ.afterOnload;
+
+    if (typeof data === 'object' && data.action) {
+      data.action.call();
+    }
   }
 
   // Focus on search box, if it's there and allows focus
@@ -960,8 +964,8 @@ window.miqShowAE_Tree = function(typ) {
  * key    = 'provision_configuration_script_id' || 'retire_configuration_script_id' || 'configure_configuration_script_id'
  * type   = 'provision' || 'retire' || 'configure'
  */
-window.miqShowEmbededdedWorkflowsModal = function(field, key, type) {
-  const url = `/${ManageIQ.controller}/embededded_workflows_modal`;
+window.miqShowEmbeddedWorkflowsModal = function(field, key, type) {
+  const url = `/${ManageIQ.controller}/embedded_workflows_modal`;
   const selected = document.getElementById(key).value;
   miqJqueryRequest(miqPassFields(url, { field, selected, type }));
   return true;

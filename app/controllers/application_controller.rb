@@ -20,7 +20,6 @@ class ApplicationController < ActionController::Base
   helper ChartingHelper
   ManageIQ::Reporting::Charting.load_helpers(self)
 
-  include ActionView::Helpers::NumberHelper # bring in the number helpers for number_to_human_size
   include ActionView::Helpers::TextHelper
   include ActionView::Helpers::DateHelper
   include ApplicationHelper
@@ -53,28 +52,28 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  include_concern 'AdvancedSearch'
-  include_concern 'Automate'
-  include_concern 'Buttons'
-  include_concern 'CiProcessing'
-  include_concern 'Compare'
-  include_concern 'CurrentUser'
-  include_concern 'DialogRunner'
-  include_concern 'Explorer'
-  include_concern 'Filter'
-  include_concern 'MiqRequestMethods'
-  include_concern 'Performance'
-  include_concern 'PolicySupport'
-  include_concern 'ReportDownloads'
-  include_concern 'SessionSize'
-  include_concern 'SysprepAnswerFile'
-  include_concern 'UserScriptFile'
-  include_concern 'Tags'
-  include_concern 'Tenancy'
-  include_concern 'Timelines'
-  include_concern 'Timezone'
-  include_concern 'TreeSupport'
-  include_concern 'WaitForTask'
+  include AdvancedSearch
+  include Automate
+  include Buttons
+  include CiProcessing
+  include Compare
+  include CurrentUser
+  include DialogRunner
+  include Explorer
+  include Filter
+  include MiqRequestMethods
+  include Performance
+  include PolicySupport
+  include ReportDownloads
+  include SessionSize
+  include SysprepAnswerFile
+  include UserScriptFile
+  include Tags
+  include Tenancy
+  include Timelines
+  include Timezone
+  include TreeSupport
+  include WaitForTask
 
   before_action :reset_toolbar
   before_action :set_session_tenant
@@ -1888,15 +1887,12 @@ class ApplicationController < ActionController::Base
       "vm"
     when "generic_object_definition" # tagging for nested list on the generic object class
       "generic_object"
-    when "ansible_playbook", "workflow"
+    when "ansible_playbook", "workflow", "embedded_terraform_template"
       "embedded_configuration_script_payload"
-    when "workflow_repository"
-      "ansible_repository"
-    # TODO: Update manageiq/db/fixtures/miq_product_features.yml by replacing ansible_credential_tag with embedded_automation_manager_credential_tag
-    # when "workflow_credential", "ansible_credential"
-    #  "embedded_automation_manager_credential"
-    when "workflow_credential"
-      "ansible_credential"
+    when "workflow_repository", "ansible_repository", "embedded_terraform_repository"
+      "embedded_configuration_script_source"
+    when "workflow_credential", "ansible_credential", "embedded_terraform_credential"
+      "embedded_automation_manager_credential"
     else
       controller_name
     end
