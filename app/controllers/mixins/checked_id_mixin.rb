@@ -10,19 +10,11 @@ module Mixins
     # Common routine to find checked items on a page (checkbox ids are
     # "check_xxx" where xxx is the item id or index)
     def find_checked_items(prefix = nil)
-      nested_list_item_key = ""
-      # Check if nested list items are tagged.
-      if params["miq_grid_checks"].present?
-        nested_list_item = params["miq_grid_checks"].split(",")[0]
-
-        # Create param string
-        nested_list_item_key = "select-row-#{nested_list_item}"
-      end
-
       has_no_check = params.each_key.none? { |var| var.start_with?("check_") }
+      has_no_select_row = params.each_key.none? { |var| var.start_with?("select-row-") }
 
       # If id is present use id, unless when nested list exists, example on summary pages
-      if params[:id].present? && params[nested_list_item_key] != "on" && has_no_check
+      if params[:id].present? && has_no_select_row && has_no_check
         Array.wrap(params[:id])
       elsif params[:miq_grid_checks].present?
         params[:miq_grid_checks].split(",").collect(&:to_i)
@@ -69,10 +61,10 @@ module Mixins
     #   either sets flash or raises exception
     #
     def find_records_with_rbac(klass, ids, options = {})
-      raise(ActiveRecord::RecordNotFound, _("Can't access records without an id")) if ids.include?(nil) || ids.empty?
+      raise(ActionController::BadRequest, _("Can't access records without an id")) if ids.include?(nil) || ids.empty?
 
       filtered = Rbac.filtered(klass.where(:id => ids), :named_scope => options[:named_scope])
-      raise(ActiveRecord::RecordNotFound, _("Can't access selected records")) unless ids.length == filtered.length
+      raise(::MiqException::RbacPrivilegeException, _("Can't access selected records")) unless ids.length == filtered.length
 
       filtered
     end

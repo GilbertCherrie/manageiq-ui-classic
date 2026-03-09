@@ -1,8 +1,17 @@
 /* eslint-disable no-undef */
 describe('Settings > My Settings', () => {
+  const interceptUserSettingsLoad = (alias = 'userSettingsLoad') => {
+    cy.interceptApi({
+      method: 'GET',
+      alias,
+      urlPattern: '/api/users/*',
+      triggerFn: () => cy.menu('Settings', 'My Settings'),
+    });
+  };
+
   beforeEach(() => {
     cy.login();
-    cy.menu('Settings', 'My Settings');
+    interceptUserSettingsLoad();
   });
 
   it('Saves the start page setting', () => {
@@ -20,12 +29,12 @@ describe('Settings > My Settings', () => {
     cy.wait('@settingsUpdate').its('response.statusCode').should('eq', 200);
 
     // Wait for page to load before clicking log out to prevent errors
-    cy.get('[name="general-subform"] > :nth-child(2) > .bx--select');
+    cy.get('[name="general-subform"] > :nth-child(2) > .cds--select');
     cy.menu('Logout');
     cy.login();
     cy.url().should('include', '/dashboard');
 
-    cy.menu('Settings', 'My Settings');
+    interceptUserSettingsLoad('userSettingsReload');
     cy.getFormInputFieldByIdAndType({ inputId: 'display.startpage' }).should(
       'have.value',
       'Overview / Dashboard'
@@ -38,7 +47,7 @@ describe('Settings > My Settings', () => {
     }).click();
     cy.wait('@settingsUpdate').its('response.statusCode').should('eq', 200);
 
-    cy.get('[name="general-subform"] > :nth-child(2) > .bx--select');
+    cy.get('[name="general-subform"] > :nth-child(2) > .cds--select');
     cy.menu('Logout');
     cy.login();
     cy.url().should('include', '/utilization');

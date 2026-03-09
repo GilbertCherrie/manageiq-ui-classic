@@ -20,25 +20,18 @@ describe('Overview > Reports Tests', () => {
       cy.get('.list-group-item').contains('Cypress Test Report').click();
 
       cy.intercept(/\/report\/x_button\/[0-9]+\?pressed=miq_report_delete/).as('delete');
-      cy.get('#report_vmdb_choice').click().then(() => {
-        cy.get('.bx--overflow-menu-options__btn').then((list) => {
-          cy.get(list.children()[4]).click();
-        });
-      });
+      cy.toolbar('Configuration', 'Delete this Report from the Database');
       cy.wait('@delete');
       cy.get('.alert-success');
       cy.get('.list-group-item').should('not.contain', 'Cypress Test Report Edit');
     });
 
     it('Can add, edit and delete a report', () => {
-      cy.get('#control_reports_accord > .panel-title > .collapsed').click(); // Navigate to reports section of explorer page
+      // Open the reports accordion and wait for it to load
+      cy.accordion('Reports');
 
       // Click add report
-      cy.get('#report_vmdb_choice').click().then(() => {
-        cy.get('.bx--overflow-menu-options__btn').then((list) => {
-          cy.get(list.children()[0]).click();
-        });
-      });
+      cy.toolbar('Configuration', 'Add a new Report');
 
       // Fill out report information, wait for fields changed
       cy.intercept('/report/form_field_changed/new').as('fieldsChanged');
@@ -154,11 +147,7 @@ describe('Overview > Reports Tests', () => {
         expect(tableValues[5]).to.eq('admin');
       }).then(() => {
         // Click edit report
-        cy.get('#report_vmdb_choice').click().then(() => {
-          cy.get('.bx--overflow-menu-options__btn').then((list) => {
-            cy.get(list.children()[1]).click();
-          });
-        });
+        cy.toolbar('Configuration', 'Edit this Report');
         // Edit report information
         cy.intercept(/\/report\/form_field_changed\/[0-9]+/).as('fieldsUpdated');
         cy.get('#name').clear({ force: true }).type('Cypress Test Report Edit', { force: true });
@@ -255,14 +244,11 @@ describe('Overview > Reports Tests', () => {
   });
 
   it('Can add, edit and delete a schedule', () => {
-    cy.get('#control_schedules_accord > .panel-title > .collapsed').click({ force: true });
+    // Open the schedules accordion and wait for it to load
+    cy.accordion('Schedules');
 
     // Click add schedule
-    cy.get('#miq_schedule_vmdb_choice').click().then(() => {
-      cy.get('.bx--overflow-menu-options__btn').then((list) => {
-        cy.get(list.children()[0]).click();
-      });
-    });
+    cy.toolbar('Configuration', 'Add a new Schedule');
     // Fill out schedule information
     cy.get('#name').type('Cypress Test Schedule', { force: true });
     cy.get('#description').type('Cypress test schedule description', { force: true });
@@ -344,11 +330,7 @@ describe('Overview > Reports Tests', () => {
     });
 
     // Click edit schedule
-    cy.get('#miq_schedule_vmdb_choice').click().then(() => {
-      cy.get('.bx--overflow-menu-options__btn').then((list) => {
-        cy.get(list.children()[0]).click();
-      });
-    });
+    cy.toolbar('Configuration', 'Edit this Schedule');
 
     // Edit the schedule information
     reportFilter = '';
@@ -444,11 +426,7 @@ describe('Overview > Reports Tests', () => {
       });
 
       // Delete the schedule
-      cy.get('#miq_schedule_vmdb_choice').click().then(() => {
-        cy.get('.bx--overflow-menu-options__btn').then((list) => {
-          cy.get(list.children()[1]).click();
-        });
-      });
+      cy.toolbar('Configuration', 'Delete this Schedule');
     });
   });
 });

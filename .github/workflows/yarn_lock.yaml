@@ -1,5 +1,11 @@
 name: Update yarn.lock
 on:
+  push:
+    branches:
+    - master
+    paths:
+    - package.json
+    - yarn.lock
   schedule:
   - cron: 0 0 * * 0
   workflow_dispatch:
@@ -29,7 +35,7 @@ jobs:
         yarn install
         git diff
     - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v7
+      uses: peter-evans/create-pull-request@v8
       with:
         add-paths: yarn.lock
         commit-message: Update yarn.lock with latest dependencies
