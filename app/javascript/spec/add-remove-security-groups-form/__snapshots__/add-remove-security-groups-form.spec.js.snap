@@ -135,7 +135,6 @@ exports[`Add/remove security groups form component should remove security group 
             "font-icon-picker": [Function],
             "font-icon-picker-ddf": [Function],
             "key-value-list": [Function],
-            "multi-select": [Function],
             "password-field": [Function],
             "plain-text": [Function],
             "radio": [Function],
@@ -148,7 +147,6 @@ exports[`Add/remove security groups form component should remove security group 
             "textarea": [Function],
             "time-picker": [Function],
             "tree-selector": [Function],
-            "tree-view": [Function],
             "validate-credentials": [Function],
             "wizard": [Function],
           }
@@ -200,7 +198,6 @@ exports[`Add/remove security groups form component should remove security group 
               "font-icon-picker": [Function],
               "font-icon-picker-ddf": [Function],
               "key-value-list": [Function],
-              "multi-select": [Function],
               "password-field": [Function],
               "plain-text": [Function],
               "radio": [Function],
@@ -214,7 +211,6 @@ exports[`Add/remove security groups form component should remove security group 
               "textarea": [Function],
               "time-picker": [Function],
               "tree-selector": [Function],
-              "tree-view": [Function],
               "validate-credentials": [Function],
               "wizard": [Function],
             }
@@ -781,7 +777,6 @@ exports[`Add/remove security groups form component should remove security group 
                           <FormControls
                             Button={[Function]}
                             ButtonGroup={[Function]}
-                            FormSpy={[Function]}
                             buttonOrder={
                               Array [
                                 "submit",
@@ -792,30 +787,6 @@ exports[`Add/remove security groups form component should remove security group 
                             canReset={false}
                             cancelLabel="Cancel"
                             disableSubmit={true}
-                            formFields={
-                              Array [
-                                <SingleField
-                                  component="select"
-                                  id="security_group"
-                                  includeEmpty={true}
-                                  label="Security Group"
-                                  name="security_group"
-                                  options={
-                                    Array [
-                                      Object {
-                                        "label": "default",
-                                        "value": "default",
-                                      },
-                                    ]
-                                  }
-                                  placeholder="<Choose>"
-                                />,
-                                <SingleField
-                                  component="spy-field"
-                                  name="spy-field"
-                                />,
-                              ]
-                            }
                             formSpyProps={
                               Object {
                                 "active": undefined,
@@ -881,31 +852,6 @@ exports[`Add/remove security groups form component should remove security group 
                             onCancel={[Function]}
                             onReset={[Function]}
                             resetLabel="Reset"
-                            schema={
-                              Object {
-                                "fields": Array [
-                                  Object {
-                                    "component": "select",
-                                    "id": "security_group",
-                                    "includeEmpty": true,
-                                    "label": "Security Group",
-                                    "name": "security_group",
-                                    "options": Array [
-                                      Object {
-                                        "label": "default",
-                                        "value": "default",
-                                      },
-                                    ],
-                                    "placeholder": "<Choose>",
-                                  },
-                                  Object {
-                                    "component": "spy-field",
-                                    "initialize": undefined,
-                                    "name": "spy-field",
-                                  },
-                                ],
-                              }
-                            }
                             submitLabel="Save"
                           >
                             <ButtonGroup>

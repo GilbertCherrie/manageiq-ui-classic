@@ -159,7 +159,6 @@ exports[`Cloud Database form component should render "Edit" form 1`] = `
                           "font-icon-picker": [Function],
                           "font-icon-picker-ddf": [Function],
                           "key-value-list": [Function],
-                          "multi-select": [Function],
                           "password-field": [Function],
                           "plain-text": [Function],
                           "radio": [Function],
@@ -172,7 +171,6 @@ exports[`Cloud Database form component should render "Edit" form 1`] = `
                           "textarea": [Function],
                           "time-picker": [Function],
                           "tree-selector": [Function],
-                          "tree-view": [Function],
                           "validate-credentials": [Function],
                           "wizard": [Function],
                         }
@@ -243,7 +241,6 @@ exports[`Cloud Database form component should render "Edit" form 1`] = `
                             "font-icon-picker": [Function],
                             "font-icon-picker-ddf": [Function],
                             "key-value-list": [Function],
-                            "multi-select": [Function],
                             "password-field": [Function],
                             "plain-text": [Function],
                             "radio": [Function],
@@ -257,7 +254,6 @@ exports[`Cloud Database form component should render "Edit" form 1`] = `
                             "textarea": [Function],
                             "time-picker": [Function],
                             "tree-selector": [Function],
-                            "tree-view": [Function],
                             "validate-credentials": [Function],
                             "wizard": [Function],
                           }
@@ -1112,7 +1108,6 @@ exports[`Cloud Database form component should render "Edit" form 1`] = `
                                         <FormControls
                                           Button={[Function]}
                                           ButtonGroup={[Function]}
-                                          FormSpy={[Function]}
                                           buttonOrder={
                                             Array [
                                               "submit",
@@ -1123,45 +1118,6 @@ exports[`Cloud Database form component should render "Edit" form 1`] = `
                                           canReset={false}
                                           cancelLabel="Cancel"
                                           disableSubmit={true}
-                                          formFields={
-                                            Array [
-                                              <SingleField
-                                                component="select"
-                                                id="ems_id"
-                                                isDisabled={true}
-                                                isRequired={true}
-                                                label="Cloud Provider"
-                                                loadOptions={[Function]}
-                                                name="ems_id"
-                                                onChange={[Function]}
-                                                validate={
-                                                  Array [
-                                                    Object {
-                                                      "type": "required",
-                                                    },
-                                                  ]
-                                                }
-                                              />,
-                                              <SingleField
-                                                component="text-field"
-                                                id="sample_component"
-                                                isRequired={true}
-                                                label="Sample Component"
-                                                name="Sample Component"
-                                                validate={
-                                                  Array [
-                                                    Object {
-                                                      "type": "required",
-                                                    },
-                                                  ]
-                                                }
-                                              />,
-                                              <SingleField
-                                                component="spy-field"
-                                                name="spy-field"
-                                              />,
-                                            ]
-                                          }
                                           formSpyProps={
                                             Object {
                                               "active": undefined,
@@ -1244,44 +1200,6 @@ exports[`Cloud Database form component should render "Edit" form 1`] = `
                                           onCancel={[Function]}
                                           onReset={[Function]}
                                           resetLabel="Reset"
-                                          schema={
-                                            Object {
-                                              "fields": Array [
-                                                Object {
-                                                  "component": "select",
-                                                  "id": "ems_id",
-                                                  "isDisabled": true,
-                                                  "isRequired": true,
-                                                  "label": "Cloud Provider",
-                                                  "loadOptions": [Function],
-                                                  "name": "ems_id",
-                                                  "onChange": [Function],
-                                                  "validate": Array [
-                                                    Object {
-                                                      "type": "required",
-                                                    },
-                                                  ],
-                                                },
-                                                Object {
-                                                  "component": "text-field",
-                                                  "id": "sample_component",
-                                                  "isRequired": true,
-                                                  "label": "Sample Component",
-                                                  "name": "Sample Component",
-                                                  "validate": Array [
-                                                    Object {
-                                                      "type": "required",
-                                                    },
-                                                  ],
-                                                },
-                                                Object {
-                                                  "component": "spy-field",
-                                                  "initialize": undefined,
-                                                  "name": "spy-field",
-                                                },
-                                              ],
-                                            }
-                                          }
                                           submitLabel="Save"
                                         >
                                           <ButtonGroup>
