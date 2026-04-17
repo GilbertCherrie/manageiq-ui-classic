@@ -4,10 +4,11 @@ const TESTCASES = [
   ['git@github.com:ManageIQ/foo-parse.git', true],
   ['https://github.com/ManageIQ/foo-parse.git', true],
   ['ssh://github.com/ManageIQ/foo-parse.git', true],
-  ['ssh://github.com:ManageIQ/foo-parse.git', true],
+  ['ssh://github.comManageIQ:1111/foo-parse.git', true],
+  ['ssh://github.com:ManageIQ/foo-parse.git', false],
   ['ssh://github.com/', true],
   ['https://github.com/ManageIQ/foo/blob/master/test/index.js', true],
-  ['hello', false],
+  ['test', false],
   ['manageiq/fooparse', false],
   ['', false],
 ];
